@@ -74,18 +74,38 @@ class market():
             self.bot_id += 1 
             
     def tick(tick):
-        maxPrice = None
-        minPrice = None
+        maxPrice = 0
+        minPrice = 0 #this will break
+        
         for item in self.bots:           #In this chunk we get the highest and lowest prices being traded
-            if item.price > maxPrice && item.buy == True:
+            if item.price > maxPrice and item.buy == True:
                 maxPrice = item
-            elif item.price < minPrice && item.sell == True:
+            elif item.price < minPrice and item.sell == True:
                 minPrice = item
-        if maxPrice.price >= minPrice.price && maxPrice.amount <= minPrice.amount:
-            
-            
-                
 
+        # CASE ONE: BUYER IS BUYING LESS THAN OR EQUAL TO CHEAPEST SELLER
+        if maxPrice.price >= minPrice.price and maxPrice.amount <= minPrice.amount:
+            minPrice.amount -= maxpPrice.amount
+            minPrice.stuff -= maxPrice.amount                   #getting the seller's values all good
+            minPrice.money += maxPrice.amount * maxPrice.price#Seller always gets the best deal here
+            if minPrice.amount == 0:
+                minPrice.sell = False
+
+            maxPrice.stuff += maxPrice.amount
+            maxPrice.money -= maxPrice.amount * maxPrice.price # getting buyer's values all good
+            maxPrice.buy = False
+            maxPrice.amount = 0
+        # CASE TWO: BUYER IS BUYING MORE THAN CHEAPEST SELLER
+        elif maxPrice.price >= minPrice.price and maxPrice.amount > minPrice.amount:
+            minPrice.stuff -= minPrice.amount
+            minPrice.money += minPrice.amount * maxPrice.price
+            maxPrice.amount -= minPrice.amount
+            maxPrice.money -= maxPrice.price * minPrice.amount
+            maxPrice.stuff += minPrice.amount
+            minPrice.amount = 0
+            minPrice.sell = False
+
+                        
 m = market()
 
         
