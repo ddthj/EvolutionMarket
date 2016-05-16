@@ -127,49 +127,51 @@ class market():
         self.bots = []
         self.price = 10
         
-        for i in range (0,2):
+        for i in range (0,200):
             self.bots.append(Bot(self.bot_id,[]))
             self.bot_id += 1 
             
     def tick(self, tick):
  
-        maxPrice = 9999
-        minPrice = 9999
+        maxPrice = 0
+        minPrice = 0
 
         print("Price = $"+str(self.price))
         
         for i in range(0,len(self.bots)):           #In this chunk we get the highest and lowest prices being traded
-            
-
-
-
-
-            
-        if maxPrice != -1 and minPrice != -1:
-            # CASE ONE: BUYER IS BUYING LESS THAN OR EQUAL TO CHEAPEST SELLER
-            if self.bots[maxPrice].price >= self.bots[minPrice].price and self.bots[maxPrice].amount <= self.bots[minPrice].amount:
-                self.bots[minPrice].amount -= self.bots[maxPrice].amount
-                self.bots[minPrice].stuff -= self.bots[maxPrice].amount                   #getting the seller's values all good
-                self.bots[minPrice].money += self.bots[maxPrice].amount * self.bots[maxPrice].price#Seller always gets the best deal here
-                if self.bots[minPrice].amount == 0:
-                    self.bots[minPrice].sell = False
-                self.bots[maxPrice].stuff += self.bots[maxPrice].amount
-                self.bots[maxPrice].money -= self.bots[maxPrice].amount * self.bots[maxPrice].price # getting buyer's values all good
-                self.bots[maxPrice].buy = False
-                self.bots[maxPrice].amount = 0
-                self.price = self.bots[maxPrice].price
-                print("an unknown transaction was made")
-            # CASE TWO: BUYER IS BUYING MORE THAN CHEAPEST SELLER
-            elif self.bots[maxPrice].price >= self.bots[minPrice].price and self.bots[maxPrice].amount > self.bots[minPrice].amount:
-                self.bots[minPrice].stuff -= self.bots[minPrice].amount
-                self.bots[minPrice].money += self.bots[minPrice].amount * self.bots[maxPrice].price
-                self.bots[maxPrice].amount -= self.bots[minPrice].amount
-                self.bots[maxPrice].money -= self.bots[maxPrice].price * self.bots[minPrice].amount
-                self.bots[maxPrice].stuff += self.bots[minPrice].amount
-                print("Bot %s, id #%s, bought %s %s for $%s" % self.bots[maxPrice].name, self.bots[maxPrice].bot_id, self.bots[maxPrice].amount, fun[random.randint(0,16)], self.bots[maxPrice].amount*self.bots[maxPrice].price)
-                self.bots[minPrice].amount = 0
+            if self.bots[i].price > self.bots[maxPrice].price and self.bots[i].buy == True:
+                maxPrice = i
+                print("maxPrice: HELPPPP")
+                print(self.bots[i].price)
+            elif self.bots[i].price < self.bots[minPrice].price and self.bots[i].sell == True:
+                minPrice = i
+                print("minPrice: HELPPPPP")
+                print(self.bots[i].name)
+  
+        # CASE ONE: BUYER IS BUYING LESS THAN OR EQUAL TO CHEAPEST SELLER
+        if self.bots[maxPrice].price >= self.bots[minPrice].price and self.bots[maxPrice].amount <= self.bots[minPrice].amount:
+            self.bots[minPrice].amount -= self.bots[maxPrice].amount
+            self.bots[minPrice].stuff -= self.bots[maxPrice].amount                   #getting the seller's values all good
+            self.bots[minPrice].money += self.bots[maxPrice].amount * self.bots[maxPrice].price#Seller always gets the best deal here
+            if self.bots[minPrice].amount == 0:
                 self.bots[minPrice].sell = False
-                self.price = self.bots[maxPrice].price
+            self.bots[maxPrice].stuff += self.bots[maxPrice].amount
+            self.bots[maxPrice].money -= self.bots[maxPrice].amount * self.bots[maxPrice].price # getting buyer's values all good
+            self.bots[maxPrice].buy = False
+            self.bots[maxPrice].amount = 0
+            self.price = self.bots[maxPrice].price
+            print("an unknown transaction was made")
+        # CASE TWO: BUYER IS BUYING MORE THAN CHEAPEST SELLER
+        elif self.bots[maxPrice].price >= self.bots[minPrice].price and self.bots[maxPrice].amount > self.bots[minPrice].amount:
+            self.bots[minPrice].stuff -= self.bots[minPrice].amount
+            self.bots[minPrice].money += self.bots[minPrice].amount * self.bots[maxPrice].price
+            self.bots[maxPrice].amount -= self.bots[minPrice].amount
+            self.bots[maxPrice].money -= self.bots[maxPrice].price * self.bots[minPrice].amount
+            self.bots[maxPrice].stuff += self.bots[minPrice].amount
+            print("Bot %s, id #%s, bought %s %s for $%s" % self.bots[maxPrice].name, self.bots[maxPrice].bot_id, self.bots[maxPrice].amount, fun[random.randint(0,16)], self.bots[maxPrice].amount*self.bots[maxPrice].price)
+            self.bots[minPrice].amount = 0
+            self.bots[minPrice].sell = False
+            self.price = self.bots[maxPrice].price
             
                 
         for i in range(0,len(self.bots)):
