@@ -87,8 +87,6 @@ class Bot():
             self.name = names[random.randint(0,20)] #gets a random name
             self.sac = random.randint(1,5) #how much the bot sacrifices to get a succesful transaction
 
-
-
         self.prediction = self.medianPrice
         print("Bot "+str(self.name)+" has been born!")
     
@@ -107,6 +105,9 @@ class Bot():
                 self.amount = int((self.price/self.money)-1)
 
             self.prediction = price + int((self.medianPrice - price)/self.predictionScale)
+    def set(self.money,amount,buy,sell):
+        
+            
     def toString(self):
         print("\nBot %s:\n"%self.name)
         print("Money: %s\nStuff: %s\nMedianPrice: %s" % (self.money, self.stuff, self.medianPrice))
