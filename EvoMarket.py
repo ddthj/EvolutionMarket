@@ -105,8 +105,11 @@ class Bot():
                 self.amount = int((self.price/self.money)-1)
 
             self.prediction = price + int((self.medianPrice - price)/self.predictionScale)
-    def set(self.money,amount,buy,sell):
-        
+    def setMe(self,money,amount,buy,sell):
+        self.money = money
+        self.amount = amount
+        self.buy = buy
+        self.sell = sell
             
     def toString(self):
         print("\nBot %s:\n"%self.name)
@@ -128,7 +131,7 @@ class market():
         self.bots = []
         self.price = 10
         
-        for i in range (0,200):
+        for i in range (0,2):
             self.bots.append(Bot(self.bot_id,[]))
             self.bot_id += 1 
             
@@ -151,28 +154,39 @@ class market():
   
         # CASE ONE: BUYER IS BUYING LESS THAN OR EQUAL TO CHEAPEST SELLER
         if self.bots[maxPrice].price >= self.bots[minPrice].price and self.bots[maxPrice].amount <= self.bots[minPrice].amount:
-            self.bots[minPrice].amount -= self.bots[maxPrice].amount
-            self.bots[minPrice].stuff -= self.bots[maxPrice].amount                   #getting the seller's values all good
-            self.bots[minPrice].money += self.bots[maxPrice].amount * self.bots[maxPrice].price#Seller always gets the best deal here
+            tempMinAmount = self.bots[minPrice].amount - self.bots[maxPrice].amount
+            tempMinStuff = self.bots[minPrice].stuff - self.bots[maxPrice].amount                   #getting the seller's values all good
+            tempMinMoney = self.bots[minPrice].money + (self.bots[maxPrice].amount * self.bots[maxPrice].price) #Seller always gets the best deal here
+            
             if self.bots[minPrice].amount == 0:
-                self.bots[minPrice].sell = False
-            self.bots[maxPrice].stuff += self.bots[maxPrice].amount
-            self.bots[maxPrice].money -= self.bots[maxPrice].amount * self.bots[maxPrice].price # getting buyer's values all good
-            self.bots[maxPrice].buy = False
-            self.bots[maxPrice].amount = 0
+                tempMinSell = False
+            else:
+                tempMinSell = True
+
+            tempMaxStuff = self.bots[maxPrice].stuff + self.bots[maxPrice].amount
+            tempMaxMoney = self.bots[maxPrice].money - (self.bots[maxPrice].amount * self.bots[maxPrice].price) # getting buyer's values all good
+            tempMaxBuy = False
+            tempMaxAmount = 0
+            
             self.price = self.bots[maxPrice].price
-            print("an unknown transaction was made")
+
+            self.bots[maxPrice].setMe(tempMaxMoney,tempMaxAmount,tempMaxBuy,False)
+            self.bots[minPrice].setMe(tempMinMoney,tempMinAmount,False,tempMinSell)
+
+            
         # CASE TWO: BUYER IS BUYING MORE THAN CHEAPEST SELLER
         elif self.bots[maxPrice].price >= self.bots[minPrice].price and self.bots[maxPrice].amount > self.bots[minPrice].amount:
-            self.bots[minPrice].stuff -= self.bots[minPrice].amount
-            self.bots[minPrice].money += self.bots[minPrice].amount * self.bots[maxPrice].price
-            self.bots[maxPrice].amount -= self.bots[minPrice].amount
-            self.bots[maxPrice].money -= self.bots[maxPrice].price * self.bots[minPrice].amount
+            tempMinStuff = self.bots[minPrice].stuff - self.bots[minPrice].amount
+            tempMinMoney = self.bots[minPrice].money + (self.bots[minPrice].amount * self.bots[maxPrice].price)
+            tempMaxAmount = self.bots[maxPrice].amount - self.bots[minPrice].amount
+            tempMaxMoney = self.bots[maxPrice].money - (self.bots[maxPrice].price * self.bots[minPrice].amount)
             self.bots[maxPrice].stuff += self.bots[minPrice].amount
-            print("Bot %s, id #%s, bought %s %s for $%s" % self.bots[maxPrice].name, self.bots[maxPrice].bot_id, self.bots[maxPrice].amount, fun[random.randint(0,16)], self.bots[maxPrice].amount*self.bots[maxPrice].price)
-            self.bots[minPrice].amount = 0
-            self.bots[minPrice].sell = False
+            #print("Bot %s, id #%s, bought %s %s for $%s" % self.bots[maxPrice].name, self.bots[maxPrice].bot_id, self.bots[maxPrice].amount, fun[random.randint(0,16)], self.bots[maxPrice].amount*self.bots[maxPrice].price)
+            tempMinAmount = 0
+            tempMinSell = False
             self.price = self.bots[maxPrice].price
+            self.bots[maxPrice].setMe(tempMaxMoney,tempMaxAmount,tempMaxBuy,False)
+            self.bots[minPrice].setMe(tempMinMoney,tempMinAmount,False,tempMinSell)
             
                 
         for i in range(0,len(self.bots)):
