@@ -31,7 +31,20 @@ names = [
     "Edwin",
     "Kyle",
     "Walter",
-    "Pip"
+    "Pip",
+    "Richard",
+    "Nixon",
+    "Drew",
+    "Nick",
+    "Gatsby",
+    "Donny",
+    "Jacob",
+    "Dog",
+    "Jeff",
+    "Skinny",
+    "Joseph",
+    "RAiZ",
+    "Granny",
     ]
 
 fun = [
@@ -52,6 +65,19 @@ fun = [
     "infomercial products",
     "time",
     "toasters",
+    "earthquakes",
+    "dogs",
+    "cats",
+    "toilets",
+    "reputable .tk domains",
+    "'legit' video games",
+    "orange oranges",
+    "lockpicks",
+    "steam accounts",
+    "not hacks",
+    "not viruses i swear",
+    "drum sets",
+    "banjos",
     ]
 
 class Bot():
