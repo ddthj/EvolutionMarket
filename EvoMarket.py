@@ -64,6 +64,7 @@ class Bot():
         self.amount = 0
         self.price = 0
         self.alive = True #bots can kill themselves
+        self.makeBaby = False
         
         if len(args) > 1:
             self.timing = args[0] + random.randint(-5,5) 
@@ -75,6 +76,8 @@ class Bot():
             self.savings = args[6] + random.randint(-25,25)
             self.name = names[random.randint(0,len(names)-1)]
             self.sac = args[7] + random.randint(-1,1)
+            if self.predictionScale <=0:
+                self.predictionScale = 1
         else:
             self.timing = random.randint(4,10) #how often does it check the market?
             self.medianPrice = random.randint(15,25) #the average price the bot assumes the market will move to
@@ -82,7 +85,7 @@ class Bot():
             #self.margin = random.randint(1,10) # how low the price must be for the bot to consider buying
             self.fail = random.randint(1,5) # how bad the bot's prediction must be before it accepts defeat and cuts losses
             self.predictionScale = random.randint(2,4) #how fast the bot thinks the price will go back up to median, 10 being fastest
-            self.savings = random.randint(25,200) #how much the bots saves for itself when making a baby so that it can live on
+            self.savings = random.randint(20,50) #how much the bots saves for itself when making a baby so that it can live on
             self.name = names[random.randint(0,len(names)-1)] #gets a random name
             self.sac = random.randint(1,5) #how much the bot sacrifices to get a succesful transaction
 
@@ -92,8 +95,10 @@ class Bot():
     def tick(self,tick,price):
         self.medianPrice = self.medianPrice + int((price-self.medianPrice)/random.randint(1,2)) + random.randint(-2,2)
         self.prediction = price + int((self.medianPrice - price)/self.predictionScale)
-
-        if self.money < 6 and self.stuff < 3:
+        if 200 < self.money - self.savings:
+            self.makeBaby = True
+            self.money -= 50
+        if self.money <= int(price/2) and self.stuff <= 1:
             self.alive = False
             print("\n\nA bot has commited suicide after running out of money and %s to sell\n\n" % fun[random.randint(0,len(fun)-1)])
             time.sleep(3)
@@ -114,6 +119,8 @@ class Bot():
             if self.money >= self.stuff and self.sell == False:
                 self.buy = True
                 self.price = price + self.sac
+                if self.price + 1 <= 0:
+                    self.price = 0
                 self.amount = int(self.money/(self.price + 1))
             else:
                 self.sell = False
@@ -155,8 +162,6 @@ class market():
             self.bot_id += 1 
             
     def tick(self, tick):
- 
-        
         print("\n\nTick number = %s:" % tick)
         print("Price = $"+str(self.price))
         #FIRST DANG CASE WHERE THE BUYER ISN"T BUYING AS MUCH AS THE SELLER IS SELLING KINDOF
@@ -183,7 +188,7 @@ class market():
                 self.bots[maxPrice].money -= (self.bots[maxPrice].amount * self.bots[maxPrice].price)
                 self.bots[maxPrice].amount = 0
                 self.bots[maxPrice].buy = False
-                self.price = int((self.bots[maxPrice].price - (self.bots[maxPrice].price-self.bots[minPrice].price)/ 3))
+                self.price = int((self.bots[maxPrice].price - (self.bots[maxPrice].price-self.bots[minPrice].price)/ 4))
                 transaction = True
             elif self.bots[maxPrice].price >= self.bots[minPrice].price and self.bots[maxPrice].amount > self.bots[minPrice].amount and self.bots[maxPrice].amount >0 and self.bots[maxPrice].bot_id != self.bots[minPrice].bot_id and self.bots[maxPrice].buy and self.bots[minPrice].sell:
                 print("Bot %s is buying %s %s from Bot %s" % (self.bots[maxPrice].name, self.bots[maxPrice].amount,fun[random.randint(0,len(fun)-1)], self.bots[minPrice].name))
@@ -194,17 +199,20 @@ class market():
                 self.bots[minPrice].stuff -= self.bots[minPrice].amount
                 self.bots[minPrice].amount = 0
                 self.bots[minPrice].sell = False
-                self.price = int((self.bots[maxPrice].price - (self.bots[maxPrice].price-self.bots[minPrice].price)/ 3))
+                self.price = int((self.bots[maxPrice].price - (self.bots[maxPrice].price-self.bots[minPrice].price)/ 4))
                 transaction = True
 
             
         for i in range(0,len(self.bots)):
-            if transaction == False:
-                self.price = int((self.bots[maxPrice].price + self.bots[minPrice].price) / 2)
+            if self.bots[i].makeBaby == True:
+                self.bots.append(Bot(self.bot_id,[self.bots[i].timing,self.bots[i].medianPrice,self.bots[i].weight,1,self.bots[i].fail,self.bots[i].predictionScale,self.bots[i].savings,self.bots[i].sac]))
+                self.bots[i].makeBaby = False
+                self.bot_id +=1
             self.bots[i].tick(tick,self.price)
-            if self.bots[i].money < 5 and self.bots[i].stuff < 2:
-                print("A bot is broke")
-                time.sleep(3)
+        if transaction == False:
+            self.price = int((self.bots[maxPrice].price + self.bots[minPrice].price) / 2 )-1
+        if self.price <= 5:
+            self.price = 5
         if tick % 100 == 0:
             
             maxMoney = 0
