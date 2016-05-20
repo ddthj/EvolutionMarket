@@ -56,8 +56,8 @@ fun = [
 
 class Bot():
     def __init__(self,bot_id,args):
-        self.money = 50 #starting money
-        self.stuff = 50  #starting resource
+        self.money = 80 #starting money
+        self.stuff = 80  #starting resource
         self.bot_id = bot_id
         self.buy = False
         self.sell = False
@@ -74,6 +74,8 @@ class Bot():
             self.fail = args[4] + random.randint(-2,2)
             self.predictionScale = args[5] + random.randint(-1,1) 
             self.savings = args[6] + random.randint(-25,25)
+            if self.savings < 0:
+                self.savings = 0
             self.name = names[random.randint(0,len(names)-1)]
             self.sac = args[7] + random.randint(-1,1)
             if self.predictionScale <=0:
@@ -96,7 +98,7 @@ class Bot():
         self.medianPrice = self.medianPrice + int((price-self.medianPrice)/random.randint(1,2)) + random.randint(-2,2)
         self.prediction = price + int((self.medianPrice - price)/self.predictionScale)
         if self.alive:
-            if 100 < self.money - self.savings:
+            if 1000 < self.money < self.savings:
                 self.makeBaby = True
                 self.money -= 50
             if self.money < price and self.stuff < 50 and self.sell == False:
@@ -211,7 +213,10 @@ class market():
             self.bots[i].tick(tick,self.price)
             
         if transaction == False:
-            self.price = int(((self.bots[maxPrice].price + self.bots[minPrice].price)-1)/ 2 )
+            if self.price > 67:
+                self.price = int(((self.bots[maxPrice].price + self.bots[minPrice].price)-4)/ 2 )
+            else:
+                self.price = int(((self.bots[maxPrice].price + self.bots[minPrice].price)-2)/ 2 )
         if self.price <= 5:
             self.price = 5
             
