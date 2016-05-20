@@ -71,10 +71,10 @@ fun = [
     "apple stock",
     "bathtubs",
     "masterlocks",
-    "fish insurance",
-    "pneumatic fluid",
+    "fish insurance contracts",
+    "pneumatic fluid cpntainers",
     "blue oranges",
-    "nothing",
+    "nothing bottles",
     "robots",
     "chinese products",
     "soft drives",
@@ -119,7 +119,7 @@ class Bot():
             #self.margin = args[3] + random.randint(-2,2)
             self.fail = args[4] + random.randint(-2,2)
             self.predictionScale = args[5] + random.randint(-1,1) 
-            self.savings = args[6] + random.randint(-25,25)
+            self.savings = args[6] + random.randint(-100,100)
             if self.savings < 0:
                 self.savings = 0
             self.name = names[random.randint(0,len(names)-1)]
@@ -133,7 +133,7 @@ class Bot():
             #self.margin = random.randint(1,10) # how low the price must be for the bot to consider buying
             self.fail = random.randint(1,5) # how bad the bot's prediction must be before it accepts defeat and cuts losses
             self.predictionScale = random.randint(2,4) #how fast the bot thinks the price will go back up to median, 10 being fastest
-            self.savings = random.randint(20,50) #how much the bots saves for itself when making a baby so that it can live on
+            self.savings = random.randint(100,1000) #how much the bots saves for itself when making a baby so that it can live on
             self.name = names[random.randint(0,len(names)-1)] #gets a random name
             self.sac = random.randint(1,5) #how much the bot sacrifices to get a succesful transaction
 
@@ -144,9 +144,9 @@ class Bot():
         self.medianPrice = self.medianPrice + int((price-self.medianPrice)/random.randint(1,2)) + random.randint(-2,2)
         self.prediction = price + int((self.medianPrice - price)/self.predictionScale)
         if self.alive:
-            if 1000 < self.money < self.savings:
+            if 3000 < self.money - self.savings:
                 self.makeBaby = True
-                self.money -= 50
+                self.money -= 1000
             if self.money < price and self.stuff < 50 and self.sell == False:
                 self.alive = False
                 print("\n\nA bot has commited suicide after running out of money and %s to sell\n\n" % fun[random.randint(0,len(fun)-1)])
