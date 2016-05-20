@@ -45,6 +45,23 @@ names = [
     "Joseph",
     "RAiZ",
     "Granny",
+    "Ethan",
+    "Hannah",
+    "Moneybags McGee",
+    "Mary",
+    "Jesus",
+    "Asher",
+    "Atticus",
+    "Declan",
+    "Oliver",
+    "Olivia",
+    "Charlotte",
+    "Ava",
+    "Elanor",
+    "Astrid",
+    "Leo",
+    "Jasper",
+    "Henry",
     ]
 
 fun = [
@@ -78,6 +95,9 @@ fun = [
     "not viruses i swear",
     "drum sets",
     "banjos",
+    "college degrees",
+    "money bags",
+    "swag",
     ]
 
 class Bot():
