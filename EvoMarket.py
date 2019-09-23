@@ -133,7 +133,7 @@ class Bot():
             #self.margin = random.randint(1,10) # how low the price must be for the bot to consider buying
             self.fail = random.randint(1,5) # how bad the bot's prediction must be before it accepts defeat and cuts losses
             self.predictionScale = random.randint(2,4) #how fast the bot thinks the price will go back up to median, 10 being fastest
-            self.savings = random.randint(100,1000) #how much the bots saves for itself when making a baby so that it can live on
+            self.savings = random.randint(10,1500) #how much the bots saves for itself when making a baby so that it can live on
             self.name = names[random.randint(0,len(names)-1)] #gets a random name
             self.sac = random.randint(1,5) #how much the bot sacrifices to get a succesful transaction
 
@@ -144,12 +144,12 @@ class Bot():
         self.medianPrice = self.medianPrice + int((price-self.medianPrice)/random.randint(1,2)) + random.randint(-2,2)
         self.prediction = price + int((self.medianPrice - price)/self.predictionScale)
         if self.alive:
-            if 3000 < self.money - self.savings:
+            if 100 < self.money - self.savings:
                 self.makeBaby = True
-                self.money -= 1000
+                self.money -= 100
             if self.money < price and self.stuff < 50 and self.sell == False:
                 self.alive = False
-                print("\n\nA bot has commited suicide after running out of money and %s to sell\n\n" % fun[random.randint(0,len(fun)-1)])
+                print("\n\n%s has commited suicide after running out of money and %s to sell\n\n" % (self.name,fun[random.randint(0,len(fun)-1)]))
 
             if price > self.medianPrice:
                 if price < self.price - self.fail and self.sell == True:
@@ -270,14 +270,14 @@ class market():
             maxMoney = 0
             minMoney = 0
             for a in range(0,len(self.bots)):
-                if self.bots[a].money > self.bots[maxPrice].money and self.bots[a].alive:
+                if self.bots[a].money+(self.bots[a].stuff*self.price) > self.bots[maxPrice].money and self.bots[a].alive:
                     maxMoney = a
-                elif self.bots[a].money < self.bots[minPrice].money and self.bots[a].alive:
+                elif self.bots[a].money+(self.bots[a].stuff*self.price) < self.bots[minPrice].money and self.bots[a].alive:
                     minMoney = a
             print("\nThe bot with the most money is %s with $%s!" % (self.bots[maxMoney].name,self.bots[maxMoney].money))
             print("The bot with the least money is %s with $%s!" % (self.bots[minMoney].name,self.bots[minMoney].money))
             print("There are %s alive bots and %s dead bots" % ((len(self.bots) - dead),dead))
-            time.sleep(5)
+            input(">")
             
             #self.bots[i].toString()
 
@@ -287,7 +287,7 @@ EvoMarket = market()
 while True:
     EvoMarket.tick(tickNumber)
     tickNumber+=1
-    time.sleep(0.1)
+    #time.sleep(0.1)
     
     
   
